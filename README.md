@@ -1,2 +1,3 @@
 # qbus_tackle
-Reworked esx_ktackle that works for the qbus framework
+
+Police Player Tackle for QBUS Framework
