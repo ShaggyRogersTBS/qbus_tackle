@@ -1,5 +1,3 @@
--- 2018 Henric 'Kekke' Johansson
-
 local Keys = {
 	["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
 	["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
@@ -12,7 +10,7 @@ local Keys = {
 	["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }
 
-NeenCore              			= nil
+QBCore             			    = nil
 local PoliceJob 				= 'police'
 
 local isTackling				= false
@@ -26,19 +24,19 @@ local lastTackleTime			= 0
 local isRagdoll					= false
 
 Citizen.CreateThread(function()
-    while NeenCore == nil do
-        TriggerEvent('NeenCore:GetObject', function(obj) NeenCore = obj end)
+    while QBCore  == nil do
+        TriggerEvent('QBCore :GetObject', function(obj) QBCore  = obj end)
         Citizen.Wait(31)
     end
 end)
 
-RegisterNetEvent('NeenCore:Client:OnPlayerLoaded')
-AddEventHandler('NeenCore:Client:OnPlayerLoaded', function(xPlayer)
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function(xPlayer)
 	PlayerData = xPlayer
 end)
 
-RegisterNetEvent('NeenCore:Client:OnJobUpdate')
-AddEventHandler('NeenCore:Client:OnJobUpdate', function(job)
+RegisterNetEvent('QBCore:Client:OnJobUpdate')
+AddEventHandler('QBCore:Client:OnJobUpdate', function(job)
 	PlayerData.job = job
 end)
 
@@ -54,8 +52,8 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('esx_kekke_tackle:getTackled')
-AddEventHandler('esx_kekke_tackle:getTackled', function(target)
+RegisterNetEvent('qbus_tackle:getTackled')
+AddEventHandler('qbus_tackle:getTackled', function(target)
 	isGettingTackled = true
 
 	local playerPed = GetPlayerPed(-1)
@@ -80,8 +78,8 @@ AddEventHandler('esx_kekke_tackle:getTackled', function(target)
 	isGettingTackled = false
 end)
 
-RegisterNetEvent('esx_kekke_tackle:playTackle')
-AddEventHandler('esx_kekke_tackle:playTackle', function()
+RegisterNetEvent('qbus_tackle:playTackle')
+AddEventHandler('qbus_tackle:playTackle', function()
 	local playerPed = GetPlayerPed(-1)
 
 	RequestAnimDict(tackleLib)
@@ -102,17 +100,17 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		Wait(0)
-		local PlayerData = NeenCore.Functions.GetPlayerData()
+		local PlayerData = QBCore.Functions.GetPlayerData()
 		local PlayerJob = PlayerData.job
 		if IsControlPressed(0, Keys['LEFTSHIFT']) and IsControlPressed(0, Keys['G']) and not isTackling and GetGameTimer() - lastTackleTime > 10 * 1000 and PlayerJob.name == 'police' then
 			Citizen.Wait(10)
-			local closestPlayer, distance = NeenCore.Functions.GetClosestPlayer()
+			local closestPlayer, distance = QBCore.Functions.GetClosestPlayer()
 
 			if distance ~= -1 and distance <= Config.TackleDistance and not isTackling and not isGettingTackled and not IsPedInAnyVehicle(GetPlayerPed(-1)) and not IsPedInAnyVehicle(GetPlayerPed(closestPlayer)) then
 				isTackling = true
 				lastTackleTime = GetGameTimer()
 
-				TriggerServerEvent('esx_kekke_tackle:tryTackle', GetPlayerServerId(closestPlayer))
+				TriggerServerEvent('qbus_tackle:tryTackle', GetPlayerServerId(closestPlayer))
 			end
 		end
 	end
